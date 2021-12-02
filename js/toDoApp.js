@@ -56,8 +56,8 @@ const showTasks = () => {
 
     if(Object.values(tasks).length === 0) {
         taskList.innerHTML = `
-        <div class="alert alert-dark text-center">
-            No hay tareas pendientes.
+        <div class="alert alert-dark text-center"> 
+        No pending tasks 😎
         </div>
         `
         return
@@ -104,3 +104,6 @@ const btnAction = e =>{
 
     e.stopPropagation()
 }
+
+document.getElementById("btnHome2").onclick = function () {
+    location.href = "./selectApp.html";}

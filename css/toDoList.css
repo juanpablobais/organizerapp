@@ -4,12 +4,12 @@
 }
 
 body {
-    background-color: #ffcd60a6;
+    background-color: #009578;
     font-family: 'Roboto', sans-serif;
 }
 
 .container {
-    background-color: #ffbc2ca6;
+    background-color: #009578;
 }
 
 #template {
@@ -21,6 +21,6 @@ body {
 }
 
 .btn:hover {
-    background-color: #966d15;
+    background-color: #009578;
     color: white;
 }

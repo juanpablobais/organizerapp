@@ -1,64 +1,70 @@
-import NotesView from "./notesView.js";
-import NotesAPI from "./notesApi.js";
+const notesContainer = document.getElementById("app");
+const addNoteButton = notesContainer.querySelector(".add-note");
 
-export default class App {
-    constructor(root) {
-        this.notes = [];
-        this.activeNote = null;
-        this.view = new NotesView(root, this._handlers());
+getNotes().forEach((note) => {
+  const noteElement = createNoteElement(note.id, note.content);
+  notesContainer.insertBefore(noteElement, addNoteButton);
+});
 
-        this._refreshNotes();
+addNoteButton.addEventListener("click", () => addNote());
+
+function getNotes() {
+  return JSON.parse(localStorage.getItem("stickynotes-notes") || "[]");
+}
+
+function saveNotes(notes) {
+  localStorage.setItem("stickynotes-notes", JSON.stringify(notes));
+}
+
+function createNoteElement(id, content) {
+  const element = document.createElement("textarea");
+
+  element.classList.add("note");
+  element.value = content;
+  element.placeholder = "Empty Sticky Note";
+
+  element.addEventListener("change", () => {
+    updateNote(id, element.value);
+  });
+
+  element.addEventListener("dblclick", () => {
+    const doDelete = confirm(
+      "Are you sure you wish to delete this sticky note?"
+    );
+
+    if (doDelete) {
+      deleteNote(id, element);
     }
+  });
 
-    _refreshNotes() {
-        const notes = NotesAPI.getAllNotes();
+  return element;
+}
 
-        this._setNotes(notes);
+function addNote() {
+  const notes = getNotes();
+  const noteObject = {
+    id: Math.floor(Math.random() * 100000),
+    content: ""
+  };
 
-        if (notes.length > 0) {
-            this._setActiveNote(notes[0]);
-        }
-    }
+  const noteElement = createNoteElement(noteObject.id, noteObject.content);
+  notesContainer.insertBefore(noteElement, addNoteButton);
 
-    _setNotes(notes) {
-        this.notes = notes;
-        this.view.updateNoteList(notes);
-        this.view.updateNotePreviewVisibility(notes.length > 0);
-    }
+  notes.push(noteObject);
+  saveNotes(notes);
+}
 
-    _setActiveNote(note) {
-        this.activeNote = note;
-        this.view.updateActiveNote(note);
-    }
+function updateNote(id, newContent) {
+  const notes = getNotes();
+  const targetNote = notes.filter((note) => note.id == id)[0];
 
-    _handlers() {
-        return {
-            onNoteSelect: noteId => {
-                const selectedNote = this.notes.find(note => note.id == noteId);
-                this._setActiveNote(selectedNote);
-            },
-            onNoteAdd: () => {
-                const newNote = {
-                    title: "NEW NOTE TITLE",
-                    body: "Write your text here."
-                };
+  targetNote.content = newContent;
+  saveNotes(notes);
+}
 
-                NotesAPI.saveNote(newNote);
-                this._refreshNotes();
-            },
-            onNoteEdit: (title, body) => {
-                NotesAPI.saveNote({
-                    id: this.activeNote.id,
-                    title,
-                    body
-                });
+function deleteNote(id, element) {
+  const notes = getNotes().filter((note) => note.id != id);
 
-                this._refreshNotes();
-            },
-            onNoteDelete: noteId => {
-                NotesAPI.deleteNote(noteId);
-                this._refreshNotes();
-            },
-        };
-    }
+  saveNotes(notes);
+  notesContainer.removeChild(element);
 }

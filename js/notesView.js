@@ -12,7 +12,7 @@ export default class NotesView {
                 <div class="notes__list"></div>
             </div>
             <div class="notes__preview">
-                <input class="notes__title" type="text" placeholder="New Note...">
+                <input class="notes__title" type="text" placeholder="NEW NOTE TITLE">
                 <textarea class="notes__body">Take Note...</textarea>
             </div>
         `;

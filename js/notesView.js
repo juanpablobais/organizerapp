@@ -66,7 +66,6 @@ export default class NotesView {
             notesListContainer.insertAdjacentHTML("beforeend", html);
         }
 
-        // Add select/delete events for each list item
         notesListContainer.querySelectorAll(".notes__list-item").forEach(noteListItem => {
             noteListItem.addEventListener("click", () => {
                 this.onNoteSelect(noteListItem.dataset.noteId);
